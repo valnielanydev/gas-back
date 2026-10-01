@@ -5,6 +5,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './modules/users/users.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { CustomerAddressesModule } from './modules/customer-addresses/customer-addresses.module';
+import { GeocodingModule } from './modules/geocoding/geocoding.module';
 
 @Module({
   imports: [
@@ -16,12 +18,14 @@ import { APP_GUARD } from '@nestjs/core';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        uri: `mongodb://${configService.get('MONGO_USER')}:${configService.get('MONGO_PASSWORD')}@${configService.get('MONGO_HOST')}:${configService.get('MONGO_PORT')}/${configService.get('MONGO_DB')}?authSource=admin`,
+        uri: `mongodb://${configService.get('MONGO_USER')}:${configService.get('MONGO_PASSWORD')}@${configService.get('MONGO_HOST')}:${configService.get('MONGO_PORT')}/${configService.get('MONGO_DB')}?authSource=admin&replicaSet=${configService.get('MONGO_REPLICA_SET')}`,
       }),
       inject: [ConfigService],
     }),
     AuthModule,
     UsersModule,
+    CustomerAddressesModule,
+    GeocodingModule,
   ],
   controllers: [],
   providers: [
