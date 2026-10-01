@@ -16,7 +16,7 @@ export const RegisterSchema = z.object({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/,
       'Senha deve ter mínimo 8 caracteres, letras maiúsculas, minúsculas, número e caractere especial',
     ),
-  phone: z.string().min(10).max(15).optional(),
+  phone: z.string().min(10).max(15),
 });
 
 export class RegisterDto extends createZodDto(RegisterSchema) {}
