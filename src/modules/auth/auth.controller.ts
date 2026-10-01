@@ -26,8 +26,17 @@ export class AuthController {
     long: { limit: 10, ttl: 3600000 },
   })
   @Post('register')
-  async register(@Body() registerDto: RegisterDto) {
+  async register(@Body() registerDto: RegisterDto, @Res() res: Response) {
     await this.authService.register(registerDto);
+
+    const result = await this.authService.login({
+      cpf: registerDto.cpf,
+      password: registerDto.password,
+    });
+
+    this.setAuthCookies(res, result);
+
+    return res.json({ message: 'User created successfully' });
   }
 
   @Public()
