@@ -29,7 +29,7 @@ export class UsersRepository {
     return this.usersModel.findOne({ _id: id }).select('+password');
   }
 
-  findById(id: string) {
+  findById(id: Types.ObjectId | string) {
     return this.usersModel.findById(id);
   }
 
@@ -39,6 +39,10 @@ export class UsersRepository {
 
   existsByCpf(cpf: string) {
     return this.usersModel.exists({ cpf });
+  }
+
+  existsByPhone(phone: string) {
+    return this.usersModel.exists({ phone });
   }
 
   updateRefreshToken(id: Types.ObjectId | string, refreshToken: string | null) {

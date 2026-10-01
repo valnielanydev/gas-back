@@ -3,6 +3,13 @@ import { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<Users>;
 
+export enum UserRole {
+  MASTER = 'master',
+  RESELLER = 'reseller_admin',
+  DRIVER = 'driver',
+  CUSTOMER = 'customer',
+}
+
 @Schema({ timestamps: true })
 export class Users {
   @Prop({ required: true, unique: true })
@@ -20,13 +27,17 @@ export class Users {
   @Prop({ select: false })
   refreshToken?: string;
 
-  @Prop({ default: 'customer' })
+  @Prop({
+    type: String,
+    enum: Object.values(UserRole),
+    default: UserRole.CUSTOMER,
+  })
   role!: string;
 
   @Prop()
   resellerId?: string;
 
-  @Prop({ unique: true })
+  @Prop({ required: true, unique: true })
   phone!: string;
 }
 

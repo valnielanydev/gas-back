@@ -9,9 +9,11 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Patch('me')
-  me(@Body() updateUserDto: UpdateUserDto, @Req() req: Request) {
+  async me(@Body() updateUserDto: UpdateUserDto, @Req() req: Request) {
     const user = req.user as JwtPayload;
 
-    return this.usersService.update(user.sub, updateUserDto);
+    await this.usersService.update(user.sub, updateUserDto);
+
+    return { message: 'updated data' };
   }
 }
