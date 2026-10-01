@@ -22,11 +22,17 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const existingUser = await this.usersService.existsByCpf(registerDto.cpf);
+    const [existingUser, existingPhone] = await Promise.all([
+      this.usersService.existsByCpf(registerDto.cpf),
+      this.usersService.existsByPhone(registerDto.phone),
+    ]);
 
     if (existingUser) {
       throw new ConflictException('User with this CPF already exists');
     }
+
+    if (existingPhone)
+      throw new ConflictException('User with this phone already exists');
 
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
 
@@ -55,7 +61,7 @@ export class AuthService {
     const tokens = this.generateTokens({
       sub: user._id.toString(),
       email: user.email,
-      role: 'user',
+      role: user.role,
     });
 
     await this.usersService.updateRefreshToken(
@@ -93,7 +99,7 @@ export class AuthService {
     const tokens = this.generateTokens({
       sub: user._id.toString(),
       email: user.email,
-      role: 'user',
+      role: user.role,
     });
 
     await this.usersService.updateRefreshToken(
@@ -139,7 +145,7 @@ export class AuthService {
     const tokens = this.generateTokens({
       sub: user._id.toString(),
       email: user.email,
-      role: 'user',
+      role: user.role,
     });
 
     await this.usersService.updateRefreshToken(
